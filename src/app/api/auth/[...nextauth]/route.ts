@@ -1,16 +1,6 @@
-import { DrizzleAdapter } from '@auth/drizzle-adapter'
 import NextAuth from 'next-auth'
-import EmailProvider from 'next-auth/providers/email'
-import { drizzle } from '~/server/lib/drizzle'
+import { authOption } from '~/server/lib/auth'
 
-const handler = NextAuth({
-  adapter: DrizzleAdapter(drizzle),
-  providers: [
-    EmailProvider({
-      server: `smtp://resend:${process.env.RESEND_API_KEY}@smtp.resend.com:587`,
-      from: process.env.EMAIL_FROM,
-    }),
-  ],
-})
+const handler = NextAuth(authOption)
 
 export { handler as GET, handler as POST }

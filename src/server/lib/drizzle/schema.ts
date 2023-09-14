@@ -57,3 +57,10 @@ export const verificationTokens = mysqlTable(
     compoundKey: primaryKey(vt.identifier, vt.token),
   })
 )
+
+export const userNotionDatabases = mysqlTable('UserNotionDatabase', {
+  userId: varchar('userId', { length: 255 }).notNull().primaryKey(),
+  transactionDatabaseId: varchar('transactionDatabaseId', {
+    length: 255,
+  }).notNull(),
+})

@@ -1,15 +1,8 @@
-import { format } from 'date-fns'
+import { differenceInCalendarDays, format, isToday } from 'date-fns'
 import { eq } from 'drizzle-orm'
+import { groupBy, mapValues } from 'lodash'
 import { notFound } from 'next/navigation'
 import { z } from 'zod'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '~/components/ui/table'
 import { getSessionOrSignIn } from '~/server/lib/auth'
 import { drizzle } from '~/server/lib/drizzle'
 import { userNotionDatabases } from '~/server/lib/drizzle/schema'
@@ -18,35 +11,74 @@ import { notion } from '~/server/lib/notion'
 export default async function FinancePage() {
   const { user } = await getSessionOrSignIn()
   const database_id = await findUserTransactionDbId(user.id)
-  const { results } = await notion.databases.query({
-    database_id,
-    sorts: [{ property: 'Date', direction: 'descending' }],
-  })
+  const transactions = await notion.databases
+    .query({
+      database_id,
+      sorts: [{ property: 'Date', direction: 'descending' }],
+    })
+    .then((res) => res.results.map(formatTransaction))
+
+  const groupedTransactions = mapValues(
+    groupBy(transactions, (tx) => format(tx.date, 'yyyyMMMdd')),
+    (txs) => ({
+      date: txs[0].date,
+      txs: txs,
+    })
+  )
+  const todayTransactions = transactions.filter((tx) => isToday(tx.date))
+  const todaySpending = todayTransactions
+    .filter((tx) => tx.amount < 0)
+    .reduce((acc, tx) => acc + tx.amount, 0)
 
   return (
     <main>
-      <h1>Transactions</h1>
-      <Table>
-        <TableHeader>
-          <TableHead>Transaction</TableHead>
-          <TableHead>Amount</TableHead>
-          <TableHead>Date</TableHead>
-        </TableHeader>
-        <TableBody>
-          {results.map(formatTransaction).map((tx) => (
-            <TableRow key={tx.id}>
-              <TableCell>{tx.name}</TableCell>
-              <TableCell>
-                {tx.amount.toLocaleString(undefined, {
-                  currency: 'IDR',
-                  style: 'currency',
-                })}
-              </TableCell>
-              <TableCell>{format(tx.date, 'EEE dd MMM HH:mm')}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+      <header className='flex h-14 items-center border-b px-6'>
+        <h1 className='text-sm font-medium'>Transactions</h1>
+      </header>
+      <div className='grid h-[calc(100vh-56px)] grid-cols-[1fr,384px]'>
+        <div className='overflow-auto'>
+          {Object.values(groupedTransactions).map(({ txs, date }) => {
+            const diffDays = differenceInCalendarDays(new Date(), date)
+
+            return (
+              <>
+                <h2 className='flex h-10 items-center bg-muted px-6 text-sm font-medium'>
+                  {diffDays === 0
+                    ? 'Today'
+                    : diffDays === 1
+                    ? 'Yesterday'
+                    : format(date, 'EEE dd MMM')}
+                </h2>
+                <div>
+                  {txs.map((tx) => (
+                    <div
+                      key={tx.id}
+                      className='flex h-12 items-center justify-between border-b px-6 text-sm transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted'
+                    >
+                      <p className='font-medium'>{tx.name}</p>
+                      <span className='flex items-center'>
+                        <p>{formatCurrency(tx.amount)}</p>
+                        <p className='w-16 text-right'>
+                          {format(tx.date, 'HH:mm')}
+                        </p>
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )
+          })}
+        </div>
+
+        <div className='border-l bg-background p-6'>
+          <div className='space-y-1.5'>
+            <p className='font-medium'>Today Spending</p>
+            <p className='text-2xl font-bold'>
+              {formatCurrency(todaySpending)}
+            </p>
+          </div>
+        </div>
+      </div>
     </main>
   )
 }
@@ -92,4 +124,11 @@ function formatTransaction(result: unknown) {
 
 function formatRichText(richTexts: { plain_text: string }[]) {
   return richTexts.map((t) => t.plain_text).join(' ')
+}
+
+function formatCurrency(amount: number) {
+  return amount.toLocaleString(undefined, {
+    currency: 'IDR',
+    style: 'currency',
+  })
 }

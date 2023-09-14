@@ -71,6 +71,7 @@
     @apply border-border;
   }
   body {
+    -webkit-font-smoothing: antialiased;
     @apply overflow-hidden bg-background text-foreground;
   }
 }

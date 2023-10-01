@@ -9,6 +9,13 @@ export const metadata: Metadata = {
   title: 'Darian',
   manifest: '/manifest.json',
   themeColor: '#000000',
+  viewport: {
+    width: 'device-width',
+    // Prevent zooming in on ios safari when focusing on inputs
+    // https://www.expiredqueues.com/css/stop-zoom-in-on-input-focus-on-mobile-devices/
+    initialScale: 1,
+    maximumScale: 1,
+  },
 }
 
 export default function RootLayout({

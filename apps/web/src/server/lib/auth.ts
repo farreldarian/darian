@@ -1,5 +1,8 @@
 import { DrizzleAdapter } from '@auth/drizzle-adapter'
-import { AuthOptions, getServerSession } from 'next-auth'
+import {
+  AuthOptions,
+  getServerSession as nextAuthGetServerSession,
+} from 'next-auth'
 import EmailProvider from 'next-auth/providers/email'
 import { redirect } from 'next/navigation'
 import { cache } from 'react'
@@ -21,8 +24,12 @@ export const authOption: AuthOptions = {
   },
 }
 
+export function getServerSession() {
+  return nextAuthGetServerSession(authOption)
+}
+
 export const getSessionOrSignIn = cache(async () => {
-  const session = await getServerSession(authOption)
+  const session = await nextAuthGetServerSession(authOption)
   if (session?.user != null) return { user: session.user }
   redirect('/api/auth/signin')
 })

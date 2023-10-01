@@ -1,22 +1,19 @@
 import { differenceInCalendarDays, format, isToday } from 'date-fns'
-import { eq } from 'drizzle-orm'
 import { groupBy, mapValues } from 'lodash'
+import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { z } from 'zod'
+import { Button } from '~/components/ui/button'
+import { Routes } from '~/lib/routes'
 import { getSessionOrSignIn } from '~/server/lib/auth'
-import { drizzle } from '~/server/lib/drizzle'
-import { userNotionDatabases } from '~/server/lib/drizzle/schema'
 import { notion } from '~/server/lib/notion'
+import { findUserTransactionDbId } from './_lib/queries/find-user-transaction-db-id'
 
 export default async function FinancePage() {
   const { user } = await getSessionOrSignIn()
   const database_id = await findUserTransactionDbId(user.id)
-  const transactions = await notion.databases
-    .query({
-      database_id,
-      sorts: [{ property: 'Date', direction: 'descending' }],
-    })
-    .then((res) => res.results.map(formatTransaction))
+  if (!database_id) notFound()
+  const transactions = await fetchTransactions(database_id)
 
   const groupedTransactions = mapValues(
     groupBy(transactions, (tx) => format(tx.date, 'yyyyMMMdd')),
@@ -32,10 +29,13 @@ export default async function FinancePage() {
 
   return (
     <main>
-      <header className='flex h-14 items-center border-b px-6'>
-        <h1 className='text-sm font-medium'>Transactions</h1>
-      </header>
-      <div className='grid h-[calc(100vh-56px)] grid-cols-[1fr,384px]'>
+      <div className='grid min-h-screen place-items-center'>
+        <Button asChild>
+          <Link href={Routes.finance.add}>Add</Link>
+        </Button>
+      </div>
+
+      <div className='hidden h-[calc(100vh-56px)] grid-cols-[1fr,384px] lg:grid'>
         <div className='overflow-auto'>
           {Object.values(groupedTransactions).map(({ txs, date }) => {
             const diffDays = differenceInCalendarDays(new Date(), date)
@@ -100,15 +100,13 @@ const resultSchema = z.object({
   }),
 })
 
-async function findUserTransactionDbId(userId: string) {
-  const result = await drizzle
-    .select({ databaseId: userNotionDatabases.transactionDatabaseId })
-    .from(userNotionDatabases)
-    .where(eq(userNotionDatabases.userId, userId))
-    .limit(1)
-    .then((res) => res.at(0))
-  if (result == null) notFound()
-  return result.databaseId
+async function fetchTransactions(database_id: string) {
+  return notion.databases
+    .query({
+      database_id,
+      sorts: [{ property: 'Date', direction: 'descending' }],
+    })
+    .then((res) => res.results.map(formatTransaction))
 }
 
 function formatTransaction(result: unknown) {

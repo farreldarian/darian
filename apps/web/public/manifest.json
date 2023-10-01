@@ -1,0 +1,9 @@
+{
+  "name": "Darian's Personal App",
+  "short_name": "Darian",
+  "description": "An app for Darian's personal use",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000"
+}

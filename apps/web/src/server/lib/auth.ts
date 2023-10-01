@@ -61,5 +61,5 @@ export function getServerSession() {
 export const getSessionOrSignIn = cache(async () => {
   const session = await nextAuthGetServerSession(authOption)
   if (session?.user != null) return { user: session.user }
-  redirect(Routes.login)
+  redirect(Routes.login.index)
 })

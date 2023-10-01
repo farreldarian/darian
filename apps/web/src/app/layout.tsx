@@ -7,6 +7,8 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'Darian',
+  manifest: '/manifest.json',
+  themeColor: '#000000',
 }
 
 export default function RootLayout({

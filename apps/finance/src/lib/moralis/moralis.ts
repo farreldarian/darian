@@ -54,6 +54,10 @@ const envSchema = z.object({
 export function getMoralis() {
   return new Moralis({
     apiKey: envSchema.parse(process.env).MORALIS_API_KEY,
-    cache: new CacheLayer({ appPrefix: 'moralis', storage: new Redis() }),
+    cache: new CacheLayer({
+      appPrefix: 'moralis',
+      storage: new Redis(),
+      aggressive: true,
+    }),
   })
 }

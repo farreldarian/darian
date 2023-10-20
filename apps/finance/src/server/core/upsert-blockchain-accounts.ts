@@ -1,11 +1,13 @@
 import { Prisma } from '@prisma/client'
 import { Address } from 'viem'
-import { db } from '../lib/db'
+import { PrismaClientTx, db } from '../lib/db'
 
 export async function upsertBlockchainAccounts(accounts: Address[]) {
-  const existMap = await findAllExistingAccounts(accounts)
-  const result = await db.blockchainAccount.createMany({
-    data: skipOrFormatPrisma(accounts, existMap),
+  const result = await db.$transaction(async (tx) => {
+    const existMap = await findAllExistingAccounts(tx, accounts)
+    return tx.blockchainAccount.createMany({
+      data: skipOrFormatPrisma(accounts, existMap),
+    })
   })
   console.info(`Upserted ${result.count} blockchain accounts`)
 }
@@ -19,7 +21,10 @@ function skipOrFormatPrisma(accounts: Address[], existMap: Map<Address, true>) {
   )
 }
 
-async function findAllExistingAccounts(accounts: Address[]) {
+async function findAllExistingAccounts(
+  db: PrismaClientTx,
+  accounts: Address[]
+) {
   const existing = await db.blockchainAccount.findMany({
     where: { address: { in: accounts } },
     select: { address: true },

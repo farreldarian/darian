@@ -12,6 +12,7 @@ import {
 import { getPublicNameTag } from '~/lib/etherscan/get-public-name-tag'
 import { db } from '~/server/lib/db'
 
+const DEFAULT_CHAIN_ID = mainnet.id
 const SUPPORTED_CHAINS = [
   mainnet,
   // l2
@@ -24,6 +25,11 @@ const SUPPORTED_CHAINS = [
   avalanche,
 ]
 
+type CheckLabelCommand = {
+  account: Address
+  chainId: number
+}
+
 export async function GET(
   request: NextRequest,
   { params }: { params: { account: string } }
@@ -31,23 +37,28 @@ export async function GET(
   if (!isAddress(params.account))
     return new Response('Invalid address', { status: 400 })
 
-  const lastCheck = await findLastCheck(params.account)
+  const command: CheckLabelCommand = {
+    account: params.account,
+    chainId: Number(extractChainParam(request) ?? DEFAULT_CHAIN_ID),
+  }
+
+  const lastCheck = await findLastCheck(command)
   if (isUpToDate(lastCheck)) {
     return new Response('Up to date', { status: 200 })
   }
 
-  const chain = getChainById(Number(extractChainParam(request) ?? 1))
+  const chain = getChainById(command.chainId)
   if (!chain) {
     return new Response('Invalid chain', { status: 400 })
   }
 
-  const tag = await getPublicNameTag(chain, params.account)
+  const tag = await getPublicNameTag(chain, command.account)
   if (tag) {
-    await setTag(tag, params.account)
+    await setTag(tag, command.account)
   }
 
-  await upsertLastCheck(params.account)
-  console.info(`Checked ${params.account}`)
+  await upsertLastCheck(command)
+  console.info(`Checked ${command.account}`)
   return new Response('OK', { status: 200 })
 }
 
@@ -58,11 +69,17 @@ async function setTag(tag: string, account: Address) {
   console.info(`Assigned ${tag} to ${account}`)
 }
 
-async function upsertLastCheck(account: Address) {
+async function upsertLastCheck(command: CheckLabelCommand) {
   await db.blockchainAccountLabelLastCheck.upsert({
-    where: { address: account },
+    where: {
+      address_chainId: { address: command.account, chainId: command.chainId },
+    },
     update: { checkedAt: new Date() },
-    create: { address: account, checkedAt: new Date() },
+    create: {
+      address: command.account,
+      chainId: command.chainId,
+      checkedAt: new Date(),
+    },
   })
 }
 
@@ -70,9 +87,11 @@ function extractChainParam(request: NextRequest) {
   return request.nextUrl.searchParams.get('chain')
 }
 
-function findLastCheck(account: Address) {
+function findLastCheck(command: CheckLabelCommand) {
   return db.blockchainAccountLabelLastCheck.findUnique({
-    where: { address: account },
+    where: {
+      address_chainId: { address: command.account, chainId: command.chainId },
+    },
   })
 }
 

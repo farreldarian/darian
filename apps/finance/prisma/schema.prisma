@@ -30,6 +30,9 @@ model BlockchainAccountLabel {
 }
 
 model BlockchainAccountLabelLastCheck {
-  address   String   @id
+  address   String
+  chainId   Int
   checkedAt DateTime
+
+  @@id([address, chainId])
 }

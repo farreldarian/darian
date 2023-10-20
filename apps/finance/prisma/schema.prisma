@@ -13,3 +13,18 @@ model User {
   id    String @id @default(cuid())
   email String @unique
 }
+
+model BlockchainAccount {
+  address String                   @id
+  labels  BlockchainAccountLabel[]
+}
+
+model BlockchainAccountLabel {
+  id        String            @id @default(cuid())
+  name      String
+  updatedAt DateTime          @default(now())
+  address   String
+  account   BlockchainAccount @relation(fields: [address], references: [address])
+
+  @@index([address])
+}

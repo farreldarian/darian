@@ -21,16 +21,24 @@ function $type<T>() {
 }
 
 function createPrisma() {
-  const connection = connect({
-    url: process.env.DATABASE_URL,
-    fetch: undiciFetch,
-  })
-  const adapter = new PrismaPlanetScale(connection)
-  return new PrismaClient({ adapter }).$extends({
+  return new PrismaClient({ adapter: getAdapter() }).$extends({
     result: {
       blockchainAccount: { address: $type<Address>()('address') },
       blockchainAccountLabel: { address: $type<Address>()('address') },
     },
   })
 }
+
+function getAdapter() {
+  const databaseUrl = process.env.DATABASE_URL
+  if (!databaseUrl) throw new Error('DATABASE_URL is not set')
+  if (!databaseUrl.includes('psdb.cloud')) return undefined
+
+  const connection = connect({
+    url: process.env.DATABASE_URL,
+    fetch: undiciFetch,
+  })
+  return new PrismaPlanetScale(connection)
+}
+
 export type ExtendedPrismaClient = ReturnType<typeof createPrisma>

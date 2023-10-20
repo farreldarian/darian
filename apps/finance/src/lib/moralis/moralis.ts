@@ -34,6 +34,9 @@ export class Moralis {
     })
     const json = await res.json()
 
+    if (!res.ok)
+      throw new Error('message' in json ? json.message : res.statusText)
+
     // --
     await this.cache?.afterFetch(args.url, json)
     // --

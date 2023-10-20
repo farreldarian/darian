@@ -8,9 +8,16 @@ export async function getPublicNameTag(chain: Chain, account: Address) {
   const res = await fetch(`${url}/address/${account}`)
   return extractNameTag(await res.text())
 }
-
+/**
+ * References:
+ * - https://github.com/brianleect/etherscan-labels/blob/main/main.py
+ */
 export function extractNameTag(text: string) {
-  const matches = load(text)('a[href^="https://"] span.hash-tag').first().text()
+  const matches = load(text)(
+    `a[href^="https://"][data-bs-toggle='tooltip'] span.hash-tag`
+  )
+    .first()
+    .text()
 
   if (matches.length === 0) return null
   return matches

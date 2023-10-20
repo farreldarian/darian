@@ -2,14 +2,23 @@ import { connect } from '@planetscale/database'
 import { PrismaPlanetScale } from '@prisma/adapter-planetscale'
 import { PrismaClient } from '@prisma/client'
 import { fetch as undiciFetch } from 'undici'
+import { Address } from 'viem'
 
 const globalForPrisma = globalThis as unknown as {
-  prisma: PrismaClient | undefined
+  prisma: ExtendedPrismaClient | undefined
 }
 
 export const db = globalForPrisma.prisma ?? createPrisma()
 
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = db
+
+function $type<T>() {
+  return <U extends string>(name: U) =>
+    ({
+      needs: { [name]: true } as Record<U, true>,
+      compute: (data: Record<U, unknown>) => data[name] as T,
+    }) as const
+}
 
 function createPrisma() {
   const connection = connect({
@@ -17,5 +26,11 @@ function createPrisma() {
     fetch: undiciFetch,
   })
   const adapter = new PrismaPlanetScale(connection)
-  return new PrismaClient({ adapter })
+  return new PrismaClient({ adapter }).$extends({
+    result: {
+      blockchainAccount: { address: $type<Address>()('address') },
+      blockchainAccountLabel: { address: $type<Address>()('address') },
+    },
+  })
 }
+export type ExtendedPrismaClient = ReturnType<typeof createPrisma>

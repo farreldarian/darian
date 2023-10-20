@@ -9,17 +9,6 @@
     "**/.next": true,
     "**/next-env.d.ts": true,
     "**/tsconfig.tsbuildinfo": true,
-    "node_modules": true,
-    "[!a]*/**": true,
-    "a[!p]*/**": true,
-    "ap[!p]*/**": true,
-    "app[!s]*/**": true,
-    "apps/[!f]*/**": true,
-    "apps/f[!i]*/**": true,
-    "apps/fi[!n]*/**": true,
-    "apps/fin[!a]*/**": true,
-    "apps/fina[!n]*/**": true,
-    "apps/finan[!c]*/**": true,
-    "apps/financ[!e]*/**": true
+    "node_modules": true
   }
 }

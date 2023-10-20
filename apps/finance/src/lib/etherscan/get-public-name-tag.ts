@@ -6,9 +6,11 @@ export async function getPublicNameTag(chain: Chain, account: Address) {
   if (url == null) return null
 
   const res = await fetch(`${url}/address/${account}`)
-  const matches = load(await res.text())('a[href^="https://"] span.hash-tag')
-    .first()
-    .text()
+  return extractNameTag(await res.text())
+}
+
+export function extractNameTag(text: string) {
+  const matches = load(text)('a[href^="https://"] span.hash-tag').first().text()
 
   if (matches.length === 0) return null
   return matches

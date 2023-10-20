@@ -11,6 +11,7 @@ import {
 import { getErc20Transfers } from '~/lib/moralis/get-erc20-transfers'
 import { getWalletActiveChains } from '~/lib/moralis/get-wallet-active-chains'
 import { getMoralis } from '~/lib/moralis/moralis'
+import { upsertBlockchainAccounts } from '~/server/core/upsert-blockchain-accounts'
 
 const CHAINS = [mainnet, polygon, bsc, avalanche, arbitrum]
 
@@ -24,6 +25,7 @@ export default async function Page(props: Props) {
     props.params.account,
     chains.map((chain) => chain.chain_id)
   )
+  await upsertBlockchainAccounts(accounts)
 
   return (
     <main>
@@ -56,17 +58,17 @@ async function fetchAccountsInteracted(account: Address, chainIds: number[]) {
   for await (const chainId of chainIds) {
     let cursor: string | undefined = undefined
     do {
-      const transfers = await getErc20Transfers(getMoralis(), {
+      const erc20Transfers = await getErc20Transfers(getMoralis(), {
         account: account,
         chainId: chainId,
         cursor,
       })
-      transfers.result.forEach((transfer) => {
+      erc20Transfers.result.forEach((transfer) => {
         add(transfer.from_address)
         add(transfer.to_address)
       })
 
-      cursor = transfers.cursor ?? undefined
+      cursor = erc20Transfers.cursor ?? undefined
     } while (cursor != null)
   }
   return Array.from(accountsSet.values())

@@ -5,10 +5,11 @@ import { PrismaClientTx, db } from '../lib/db'
 export async function upsertBlockchainAccounts(accounts: Address[]) {
   const result = await db.$transaction(async (tx) => {
     const existMap = await findAllExistingAccounts(tx, accounts)
-    return tx.blockchainAccount.createMany({
-      data: skipOrFormatPrisma(accounts, existMap),
-    })
+    const missing = skipOrFormatPrisma(accounts, existMap)
+    if (missing.length === 0) return 'skipped' as const
+    return tx.blockchainAccount.createMany({ data: missing })
   })
+  if (result === 'skipped') return
   console.info(`Upserted ${result.count} blockchain accounts`)
 }
 

@@ -10,7 +10,7 @@ import {
   polygon,
 } from 'viem/chains'
 import { getPublicNameTag } from '~/lib/etherscan/get-public-name-tag'
-import { db } from '~/server/lib/db'
+import { db } from '~/server/db'
 
 const DEFAULT_CHAIN_ID = mainnet.id
 const SUPPORTED_CHAINS = [

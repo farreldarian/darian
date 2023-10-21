@@ -4,11 +4,16 @@ import { Loader2 } from 'lucide-react'
 import { signIn } from 'next-auth/react'
 import { toast } from 'sonner'
 import { z } from 'zod'
-import { Button } from '~/components/ui/button'
-import { buttonGroup } from '~/components/ui/button/recipes'
-import { Form, FormField, FormItem, FormMessage } from '~/components/ui/form'
-import { Input } from '~/components/ui/input'
-import { useZodForm } from '~/hooks/form'
+import { Button } from '~/lib/components/ui/button'
+import { buttonGroup } from '~/lib/components/ui/button/recipes'
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormMessage,
+} from '~/lib/components/ui/form'
+import { Input } from '~/lib/components/ui/input'
+import { useZodForm } from '~/lib/hooks/form'
 import getErrorMessage from '~/lib/utils/get-error-msg'
 
 export function EmailInput() {

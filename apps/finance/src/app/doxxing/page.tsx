@@ -1,5 +1,5 @@
-import { Button } from '~/components/ui/button'
-import { buttonGroup } from '~/components/ui/button/recipes'
+import { Button } from '~/lib/components/ui/button'
+import { buttonGroup } from '~/lib/components/ui/button/recipes'
 import { cn } from '~/lib/utils'
 import { AddressInput, DoxxingForm } from './components/doxxing-form'
 

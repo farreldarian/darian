@@ -4,10 +4,15 @@ import { useRouter } from 'next/navigation'
 import { ComponentProps, ReactNode } from 'react'
 import { isAddress } from 'viem'
 import { z } from 'zod'
-import { Form, FormControl, FormField, FormItem } from '~/components/ui/form'
-import { Input, InputProps } from '~/components/ui/input'
-import { useZodForm } from '~/hooks/form'
-import { Routes } from '~/lib/routes'
+import { Routes } from '~/app/routes'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+} from '~/lib/components/ui/form'
+import { Input, InputProps } from '~/lib/components/ui/input'
+import { useZodForm } from '~/lib/hooks/form'
 
 export function DoxxingForm({
   children,

@@ -1,6 +1,6 @@
-import { Button } from '~/components/ui/button'
-import { buttonGroup } from '~/components/ui/button/recipes'
-import { Input } from '~/components/ui/input'
+import { Button } from '~/lib/components/ui/button'
+import { buttonGroup } from '~/lib/components/ui/button/recipes'
+import { Input } from '~/lib/components/ui/input'
 import { CallbackUrlInput } from './compoennts/callback-url-input'
 
 export default function VerifyRequestPage() {

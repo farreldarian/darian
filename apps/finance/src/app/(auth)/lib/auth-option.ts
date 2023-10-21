@@ -5,8 +5,8 @@ import EmailProvider from 'next-auth/providers/email'
 import { generate } from 'random-words'
 import { Resend } from 'resend'
 import { z } from 'zod'
-import { Routes } from '~/lib/routes'
-import { db } from '~/server/lib/db'
+import { Routes } from '~/app/routes'
+import { db } from '~/server/db'
 import LinearLoginCodeEmail from './email-templates/linear-login-code-email'
 
 export const authOption: AuthOptions = {

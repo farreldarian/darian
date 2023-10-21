@@ -1,6 +1,6 @@
 import { Prisma } from '@prisma/client'
 import { Address } from 'viem'
-import { PrismaClientTx, db } from '../lib/db'
+import { PrismaClientTx, db } from '../../server/db'
 
 export async function upsertBlockchainAccounts(accounts: Address[]) {
   const result = await db.$transaction(async (tx) => {

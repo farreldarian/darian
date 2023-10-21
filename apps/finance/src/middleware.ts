@@ -1,5 +1,5 @@
 import { withAuth } from 'next-auth/middleware'
-import { Routes } from '~/lib/routes'
+import { Routes } from '~/app/routes'
 
 const middleware = withAuth({
   pages: {

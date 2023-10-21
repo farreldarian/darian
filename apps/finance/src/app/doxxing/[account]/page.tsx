@@ -1,5 +1,6 @@
 import { Address, isAddressEqual } from 'viem'
 import { arbitrum, avalanche, bsc, mainnet, polygon } from 'viem/chains'
+import { upsertBlockchainAccounts } from '~/core/account/upsert-blockchain-accounts'
 import {
   Table,
   TableBody,
@@ -7,11 +8,10 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '~/components/ui/table'
+} from '~/lib/components/ui/table'
 import { getErc20Transfers } from '~/lib/moralis/get-erc20-transfers'
 import { getWalletActiveChains } from '~/lib/moralis/get-wallet-active-chains'
 import { getMoralis } from '~/lib/moralis/moralis'
-import { upsertBlockchainAccounts } from '~/server/core/upsert-blockchain-accounts'
 
 const CHAINS = [mainnet, polygon, bsc, avalanche, arbitrum]
 

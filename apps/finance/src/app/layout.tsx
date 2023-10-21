@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter as FontSans } from 'next/font/google'
 import { Toaster } from 'sonner'
-import { ThemeProvider } from '~/components/theme-provider'
+import { ThemeProvider } from '~/lib/components/theme-provider'
 import './globals.css'
 
 export const fontSans = FontSans({

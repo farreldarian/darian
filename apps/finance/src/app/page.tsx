@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { Button } from '~/components/ui/button'
-import { Routes } from '~/lib/routes'
+import { Routes } from '~/app/routes'
+import { Button } from '~/lib/components/ui/button'
 import { getServerAuthSession } from './(auth)/lib/get-server-auth-session'
 import { SignOutButton } from './(auth)/lib/sign-out-button'
 

@@ -11,7 +11,7 @@
       "dependsOn": ["check:lint", "check:type"]
     },
     "build": {
-      "dependsOn": ["generate"]
+      "dependsOn": ["generate", "check"]
     }
   }
 }

@@ -12,6 +12,9 @@ import LinearLoginCodeEmail from './email-templates/linear-login-code-email'
 export const authOption: AuthOptions = {
   // next-auth uses direct `PrismaClient` meanwhile we use the $extended version
   adapter: PrismaAdapter(db as unknown as PrismaClient),
+  session: {
+    strategy: 'jwt',
+  },
   providers: [
     EmailProvider({
       generateVerificationToken() {

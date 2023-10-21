@@ -70,12 +70,17 @@ model BlockchainAccount {
   labels  BlockchainAccountLabel[]
 }
 
+enum BlockchainAccountLabelSource {
+  Etherscan
+}
+
 model BlockchainAccountLabel {
-  id        String            @id @default(cuid())
+  id        String                        @id @default(cuid())
   name      String
-  updatedAt DateTime          @default(now())
+  updatedAt DateTime                      @default(now())
   address   String
-  account   BlockchainAccount @relation(fields: [address], references: [address])
+  account   BlockchainAccount             @relation(fields: [address], references: [address])
+  source    BlockchainAccountLabelSource?
 
   @@index([address])
 }

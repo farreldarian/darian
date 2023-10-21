@@ -51,7 +51,7 @@ export default async function Page(props: Props) {
 async function fetchAccountsInteracted(account: Address, chainIds: number[]) {
   const accountsSet = new Set<Address>()
   const add = (address: Address) => {
-    if (isAddressEqual(address, account)) return
+    if (isAddressEqual(address, account)) return // Skip adding self
     accountsSet.add(address)
   }
 

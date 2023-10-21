@@ -1,0 +1,17 @@
+{
+  "extends": ["//"],
+  "$schema": "https://turbo.build/schema.json",
+  "pipeline": {
+    "generate": {
+      "cache": false
+    },
+    "check:lint": {},
+    "check:ts": {},
+    "check": {
+      "dependsOn": ["check:lint", "check:ts"]
+    },
+    "build": {
+      "dependsOn": ["generate"]
+    }
+  }
+}

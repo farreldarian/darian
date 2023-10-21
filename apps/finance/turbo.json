@@ -6,9 +6,9 @@
       "cache": false
     },
     "check:lint": {},
-    "check:ts": {},
+    "check:type": {},
     "check": {
-      "dependsOn": ["check:lint", "check:ts"]
+      "dependsOn": ["check:lint", "check:type"]
     },
     "build": {
       "dependsOn": ["generate"]

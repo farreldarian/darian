@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "generate": "prisma generate",
-    "check:ts": "tsc --noEmit",
+    "check:type": "tsc --noEmit",
     "check:lint": "next lint",
     "build": "next build --no-lint",
     "start": "next start"

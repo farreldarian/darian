@@ -9,6 +9,18 @@ import { Routes } from '~/app/routes'
 import { db } from '~/server/db'
 import LinearLoginCodeEmail from './email-templates/linear-login-code-email'
 
+const userSessionFromParamSchema = z
+  .object({
+    token: z.object({
+      email: z.string().email(),
+      sub: z.string().cuid2(),
+    }),
+  })
+  .transform((params) => ({
+    id: params.token.sub,
+    email: params.token.email,
+  }))
+
 export const authOption: AuthOptions = {
   // next-auth uses direct `PrismaClient` meanwhile we use the $extended version
   adapter: PrismaAdapter(db as unknown as PrismaClient),
@@ -35,9 +47,9 @@ export const authOption: AuthOptions = {
     }),
   ],
   callbacks: {
-    async session({ session, user }) {
-      session.user = user
-      return session
+    async session(params) {
+      params.session.user = userSessionFromParamSchema.parse(params)
+      return params.session
     },
   },
   pages: {

@@ -1,5 +1,5 @@
 import { Prisma } from '@prisma/client'
-import { Address } from 'viem'
+import { Address, getAddress } from 'viem'
 import { PrismaClientTx, db } from '../../server/db'
 
 export async function upsertBlockchainAccounts(accounts: Address[]) {
@@ -17,7 +17,7 @@ function skipOrFormatPrisma(accounts: Address[], existMap: Map<Address, true>) {
   return accounts.flatMap<Prisma.BlockchainAccountCreateManyInput>(
     (account) => {
       if (existMap.has(account)) return []
-      return [{ address: account }]
+      return [{ address: getAddress(account) }]
     }
   )
 }

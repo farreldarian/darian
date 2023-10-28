@@ -1,13 +1,12 @@
+import { AccountFormInput } from '~/lib/components/AccountForm'
 import { Button } from '~/lib/components/ui/button'
-import { buttonGroup } from '~/lib/components/ui/button/recipes'
-import { cn } from '~/lib/utils'
-import { AddressInput, DoxxingForm } from './components/doxxing-form'
+import { DoxxingForm } from './components/doxxing-form'
 
 export default function Page() {
   return (
     <main className='grid min-h-screen place-items-center'>
-      <DoxxingForm className={cn(buttonGroup(), 'w-full max-w-xs')}>
-        <AddressInput autoFocus placeholder='Enter address...' />
+      <DoxxingForm>
+        <AccountFormInput autoFocus placeholder='Enter address...' />
         <Button>Submit</Button>
       </DoxxingForm>
     </main>

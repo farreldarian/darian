@@ -10,7 +10,7 @@ export function DoxxingForm({ children }: { children: ReactNode }) {
   return (
     <AccountForm
       className={cn(buttonGroup(), 'w-full max-w-xs')}
-      getDestinationPath={Routes.doxxing.account}
+      getDestinationPath={(a) => Routes.doxxing.account(a)}
     >
       {children}
     </AccountForm>

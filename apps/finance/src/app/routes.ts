@@ -11,4 +11,10 @@ export const Routes = {
       return `${this.base}/${address}`
     },
   },
+  yield: {
+    base: '/yield',
+    account(address: Address) {
+      return `${this.base}/${address}`
+    },
+  },
 }

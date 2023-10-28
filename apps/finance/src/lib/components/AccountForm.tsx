@@ -5,7 +5,13 @@ import { ComponentProps } from 'react'
 import { Address, isAddress } from 'viem'
 import { z } from 'zod'
 import { useZodForm } from '../hooks/form'
-import { Form, FormControl, FormField, FormItem, FormMessage } from './ui/form'
+import {
+  Form,
+  FormControl,
+  FormItem,
+  FormMessage,
+  createFormField,
+} from './ui/form'
 import { Input, InputProps } from './ui/input'
 
 // #region Account Form
@@ -39,13 +45,13 @@ export default function AccountForm({
 const formSchema = z.object({
   address: z.string().refine(isAddress),
 })
-type FieldValues = z.infer<typeof formSchema>
+const FormField = createFormField<z.infer<typeof formSchema>>()
 // #endregion
 
 // #region Address Input
 export function AccountFormInput(props: InputProps) {
   return (
-    <FormField<FieldValues>
+    <FormField
       name='address'
       render={({ field }) => (
         <FormItem>

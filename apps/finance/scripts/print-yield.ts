@@ -10,13 +10,20 @@ const publicClient = getArbitrumClient()
 const account = '0x'
 const token = '0x'
 
+console.time('Fetching blocks')
 const blocks = reverse(await getLastNDaysBlocks(chain.id, 31))
+console.timeEnd('Fetching blocks')
+
+console.time('Fetching balances')
 const balances = await getBalancesOnBlocks({
   account,
   blockNumbers: blocks.map((b) => b.block),
   publicClient,
   token,
 })
+console.timeEnd('Fetching balances')
+
+console.log('Summary:')
 console.log(getSummary())
 
 // #region Helpers

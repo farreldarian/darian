@@ -41,7 +41,14 @@ function getSummary() {
     return {
       date: block.date,
       balance: formatUnits(balance, 6),
-      earnedForADay: earnedForADay ? formatUnits(earnedForADay, 6) : '-',
+      earnedForADay: (() => {
+        if (earnedForADay == null) return '-'
+        const day = formatUnits(earnedForADay, 6)
+        const month = formatUnits(earnedForADay * 31n, 6)
+        const year = formatUnits(earnedForADay * 365n, 6)
+        // prettier-ignore
+        return `${day} (${compactUsd(month)} /month, ${compactUsd(year)} /year)`
+      })(),
       apr: (() => {
         if (earnedForADay == null || previous == null) return '-'
         const apr = Number(earnedForADay * 365n) / Number(previous[0]!)
@@ -51,6 +58,14 @@ function getSummary() {
         })
       })(),
     }
+  })
+}
+
+function compactUsd(value: string) {
+  return Number(value).toLocaleString(undefined, {
+    style: 'currency',
+    currency: 'USD',
+    notation: 'compact',
   })
 }
 // #endregion

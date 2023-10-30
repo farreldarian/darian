@@ -1,8 +1,8 @@
 import { reverse, zip } from 'lodash'
 import { formatUnits } from 'viem'
 import { arbitrum } from 'viem/chains'
-import { getBalancesOnBlocks } from '~/app/yield/[account]/_lib/get-balances-on-block'
-import { getLastNDaysBlocks } from '~/app/yield/[account]/_lib/get-last-n-days-block'
+import { getBalancesOnBlocks } from '~/app/yield/[account]/_lib/get-balances-on-blocks'
+import { getLastNDaysBlocks } from '~/app/yield/[account]/_lib/get-last-n-days-blocks'
 import { getArbitrumClient } from '~/lib/viem/get-public-client'
 
 const chain = arbitrum

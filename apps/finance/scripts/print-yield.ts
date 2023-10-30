@@ -47,7 +47,7 @@ function getSummary() {
         const apr = Number(earnedForADay * 365n) / Number(previous[0]!)
         return apr.toLocaleString(undefined, {
           style: 'percent',
-          maximumFractionDigits: 10,
+          maximumFractionDigits: 2,
         })
       })(),
     }

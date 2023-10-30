@@ -11,7 +11,7 @@ const account = '0x'
 const token = '0x'
 
 console.time('Fetching blocks')
-const blocks = reverse(await getLastNDaysBlocks(chain.id, 31))
+const blocks = reverse(await getLastNDaysBlocks(chain.id, 93))
 console.timeEnd('Fetching blocks')
 
 console.time('Fetching balances')

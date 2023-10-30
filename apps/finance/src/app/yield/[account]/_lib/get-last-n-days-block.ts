@@ -6,9 +6,9 @@ import {
 } from '~/lib/moralis/get-date-to-block'
 import { getMoralis } from '~/lib/moralis/moralis'
 
-export async function getLast7DaysBlocks(chainId: number) {
+export async function getLastNDaysBlocks(chainId: number, n = 7) {
   const blocks: GetDateToBLockResponse[] = []
-  for await (const date of getLast7Days()) {
+  for await (const date of getLastNDays(n)) {
     const res = await getDateToBlock(getMoralis(), {
       date,
       chainId,
@@ -18,7 +18,7 @@ export async function getLast7DaysBlocks(chainId: number) {
   return blocks
 }
 
-function getLast7Days() {
+function getLastNDays(n: number) {
   const today = startOfToday()
-  return [today, ...range(6).map((i) => startOfDay(subDays(today, i + 1)))]
+  return [today, ...range(n - 1).map((i) => startOfDay(subDays(today, i + 1)))]
 }

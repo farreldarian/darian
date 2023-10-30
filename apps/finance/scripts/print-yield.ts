@@ -2,7 +2,7 @@ import { reverse, zip } from 'lodash'
 import { formatUnits } from 'viem'
 import { arbitrum } from 'viem/chains'
 import { getBalancesOnBlocks } from '~/app/yield/[account]/_lib/get-balances-on-block'
-import { getLast7DaysBlocks } from '~/app/yield/[account]/_lib/get-last-7-days-block'
+import { getLastNDaysBlocks } from '~/app/yield/[account]/_lib/get-last-n-days-block'
 import { getArbitrumClient } from '~/lib/viem/get-public-client'
 
 const chain = arbitrum
@@ -10,7 +10,7 @@ const publicClient = getArbitrumClient()
 const account = '0x'
 const token = '0x'
 
-const blocks = reverse(await getLast7DaysBlocks(chain.id))
+const blocks = reverse(await getLastNDaysBlocks(chain.id, 31))
 const balances = await getBalancesOnBlocks({
   account,
   blockNumbers: blocks.map((b) => b.block),

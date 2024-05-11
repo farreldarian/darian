@@ -1,0 +1,14 @@
+{
+	"name": "env",
+	"version": "1.0.0",
+	"sideEffects": false,
+	"exports": {
+		".": "./src/index.ts"
+	},
+	"scripts": {
+		"test": "bun test"
+	},
+	"dependencies": {
+		"valibot": "^0.30.0"
+	}
+}

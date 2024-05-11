@@ -1,8 +1,7 @@
 {
-  "name": "darian",
-  "private": true,
-  "workspaces": [
-    "apps/*"
-  ],
-  "packageManager": "bun@1.0.7"
+	"name": "darian",
+	"private": true,
+	"devDependencies": {
+		"@biomejs/biome": "^1.7.3"
+	}
 }
